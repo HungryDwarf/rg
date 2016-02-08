@@ -11,9 +11,13 @@ import org.jsfml.window.event.Event;
 public class Main {
 
 	public static void main(String[] args) {
-		Map m = new Map();
 		
-		VideoMode vm = new VideoMode(m.mapWidth*64, m.mapHeight*64);
+		final int cellSize = 64;
+		
+		Map map = new Map();
+		Player player = new Player("Player.png", map.mapWidth*cellSize, map.mapHeight*cellSize);
+		
+		VideoMode vm = new VideoMode(map.mapWidth*cellSize, map.mapHeight*cellSize);
 		RenderWindow renderWindow = new RenderWindow(vm, "rg", WindowStyle.CLOSE);
 		
 		Clock clock = new Clock();
@@ -22,8 +26,8 @@ public class Main {
 		while(renderWindow.isOpen()){
 			time = clock.getElapsedTime().asSeconds();
 			clock.restart();
-			time = time*500;
-			//player.update(time);
+			time = time*250;
+			player.update(time);
 			
 			for (Event myEvent : renderWindow.pollEvents()) {
 				if (myEvent.type == Event.Type.CLOSED) {
@@ -34,12 +38,25 @@ public class Main {
 			if (Keyboard.isKeyPressed(Key.ESCAPE)) {
 				renderWindow.close();
 			}
+			if (Keyboard.isKeyPressed(Key.LEFT)) {
+				player.xSpeed = (float) -1;
+			}
+			if (Keyboard.isKeyPressed(Key.RIGHT)) {
+				player.xSpeed = (float) 1;
+			}
+			if (Keyboard.isKeyPressed(Key.UP)) {
+				player.ySpeed = (float) -1;
+			}
+			if (Keyboard.isKeyPressed(Key.DOWN)) {
+				player.ySpeed = (float) 1;
+			}
 			
-			for (int i = 0; i < m.mapHeight; i++) {
-				for (int j = 0; j < m.mapWidth; j++) {
-					renderWindow.draw(m.mapSprite[i][j]);
+			for (int i = 0; i < map.mapHeight; i++) {
+				for (int j = 0; j < map.mapWidth; j++) {
+					renderWindow.draw(map.mapSprite[i][j]);
 				}
 			}
+			renderWindow.draw(player.skin);
 			renderWindow.display();
 		}
 	}

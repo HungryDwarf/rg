@@ -8,7 +8,7 @@ import org.jsfml.graphics.Sprite;
 import org.jsfml.graphics.Texture;
 
 public class Map {
-	String[][] map = new String[][] { 
+	static String[][] map = new String[][] { 
 		{ "w", "w", "w", "w", "w" }, 
 		{ "w", " ", " ", " ", "w" },
 		{ "w", " ", " ", " ", "w" }, 
@@ -42,14 +42,8 @@ public class Map {
 				if (map[h][w] == "w")
 					mapSprite[h][w].setTextureRect(new IntRect(64, 128, 64, 64));
 
-				// Важное уточнение, слева ширина, а справа высота!!!
 				mapSprite[h][w].setPosition(64 * w, 64 * h);
-				// renderWindow.draw(mapSprite);
 			}
 		}
-	}
-
-	Sprite[][] getSprite() {
-		return mapSprite;
 	}
 }
