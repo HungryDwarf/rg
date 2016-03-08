@@ -2,45 +2,48 @@ package rg;
 
 public class Player extends Entity {
 
-	Player(String pathToTexture, int mapHeight, int mapWidth) {
-		super(pathToTexture, mapHeight, mapWidth);
-		xPos = (mapHeight / 2) - 16;
-		yPos = (mapWidth / 2) - 16;
-	}
-
-	void update(float time) {
-		xPos = xPos + (xSpeed * time);
-		// ќбработка столконвений по оси х
-		collision(1);
-		yPos = yPos + (ySpeed * time);
-		// ќбработка столкновений по оси у
-		collision(0);
-		skin.setPosition(xPos, yPos);
-		xSpeed = ySpeed = 0;
-
-	}
-
-	
-	// мен€ть кху€м, не понимаю, что здесь происходит
-	// но оно работает
-	// но кху€м
-	void collision(int collisionType) {
-		for (int j = (int) xPos / 64; j < (((int) xPos + 32) / 64) + 1; j++) {
-			for (int i = (int) yPos / 64; i < (((int) yPos + 32) / 64) + 1; i++) {
-				if (Map.map[i][j] == " ")
-					;
-				else {
-					if ((ySpeed < 0) & (collisionType == 0))
-						yPos = i * 64 + 65;
-					if ((ySpeed > 0) & (collisionType == 0))
-						yPos = i * 64 - 33;// 31 это ширина персонажа!!!
-					if ((xSpeed < 0) & (collisionType == 1))
-						xPos = j * 64 + 65;
-					if ((xSpeed > 0) & (collisionType == 1))
-						xPos = j * 64 - 33;// 31 это ширина персонажа!!!
-				}
-			}
+	int cellSize = Main.cellSize;
+	private int score = 0;
+	Player(String pathToTexture) {
+		super(pathToTexture);
+		xPos = 1 * cellSize;//(mapHeight / 2);
+		yPos = 1 * cellSize;//(mapWidth / 2);
+		while(GameMap.getMap()[xPos/cellSize][yPos/cellSize].equals("w")){
+			xPos += cellSize;
 		}
+		stats.put("attack", 2);
+		stats.put("defense", 2);
+	}
+	
+	void move(int dx, int dy) {
+		if(collision(dx, dy) == 1) { //collision, do nothing
+			return;
+		}
+		xPos += dx;
+		yPos += dy;
+		take_coin();
+	}
+	
+	int collision(int dx, int dy) {
+		try{
+			if(GameMap.getMap()[((yPos + dy)/cellSize)][((xPos + dx)/cellSize)].equals("w")) {
+				return 1;
+			}
+		} catch (IndexOutOfBoundsException e) {
+			System.out.println("Index out of bounds");
+		}
+		return 0;
+	}
+	
+	void take_coin(){
+		if(GameMap.getMap()[(int) yPos/cellSize][(int) xPos/cellSize].equals("c")){
+			score++;
+			GameMap.setMap((int) yPos/cellSize, (int) xPos/cellSize, "a");
+		}
+	}
+	
+	int getScore(){
+		return score;
 	}
 
 }
